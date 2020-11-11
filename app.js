@@ -4,44 +4,72 @@ let time = startingMinutes * 60
 
 const countdownElem = document.getElementById('countdown');
 
-setInterval(updateCountdown, 1000)
-
 function updateCountdown() {
   const minutes = Math.floor(time / 60)
   let seconds = time % 60
 
   seconds = seconds <10 ? '0' + seconds : seconds
 
-  countdownElem.innerHTML= `${minutes}: ${seconds}`;
+  countdownElem.innerHTML= `${seconds}`;
   time--;
-}
 
+  if (time <= 0) {
+    clearInterval (updateCountdown)
+  }
+}
   updateCountdown();
 
-
+// lines 22-44 manipulate the DOM and create a button that when clicked, will give a question and after clicking an answer will go to the next question but using the for loop
   let index = 0
 
   const quiz = document.getElementById('quiz')
 
   document.getElementById('start').addEventListener('click',() =>{
   display(index)
-
+    setInterval(updateCountdown, 1000)
   })
 
   function display() {
+    quiz.innerHTML=''
     console.log(index)
     let questions = document.createElement('h1')
     quiz.append(questions)
     questions.textContent=(myQuestions[index].exam)
+    
     for (let i = 0; i < myQuestions[index].answers.length; i++) {
-    let answers = document.createElement('h3')
+    let answers = document.createElement('button')
+    answers.setAttribute('index', index)
     quiz.append(answers)
     answers.textContent=(myQuestions[index].answers[i])
-    
     }
     index++
   }
 
+  quiz.addEventListener('click',(e) =>{
+    e.preventDefault()
+    if (event.target.matches('button')) {
+      console.log(event.target.textContent)
+      let question = event.target.getAttribute('index')
+      console.log(question)
+      if (event.target.textContent === myQuestions[question].correctAnswer) {
+        console.log('winner')
+      }
+      else {
+        console.log('loser')
+        time=time-5
+      }
+    }
+    display()
+
+  })
+
+   
+
+
+  //  if (choice.textContent === questions[index].correctAnswer {
+  //    quizScore++;
+  //    newDiv.textContent = "Correct"
+  //  }
 
 // My list of questions for the quiz
 const myQuestions = [
